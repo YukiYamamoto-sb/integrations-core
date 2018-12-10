@@ -72,7 +72,7 @@ def pdh_mocks_fixture_bad_perf_strings():
     pdhcollectquerydata.stop()
 
 
-def initialize_pdh_tests(lang=None):
+def initialize_pdh_tests(lang=None, update=False):
     """
     initialize_pdh_tests
 
@@ -101,19 +101,31 @@ def initialize_pdh_tests(lang=None):
     eng_array, eng_indexes = load_registry_values(en_us_reg_file)
     global index_array
     global counters_index
-    index_array = eng_array
+    if update:
+        index_array.extend(eng_array)
+    else:
+        index_array = eng_array
     if lang is None:
-        counters_index = eng_indexes
+        if update:
+            for ctr in eng_indexes:
+                counters_index.update(eng_indexes)
+        else:
+            counters_index = eng_indexes
     else:
         loc_array, loc_indexes = load_registry_values(local_reg_file)
-        counters_index = loc_indexes
+        if update:
+            for ctr in loc_indexes:
+                counters_index.update(loc_indexes)
+        else:
+            counters_index = loc_indexes
 
-    read_available_counters(counterdata)
+    read_available_counters(counterdata, update=update)
 
 
-def read_available_counters(fname):
-    counters_by_class.clear()
-    instances_by_class.clear()
+def read_available_counters(fname, update=False):
+    if not update:
+        counters_by_class.clear()
+        instances_by_class.clear()
 
     with open(fname) as f:
         for line in f:

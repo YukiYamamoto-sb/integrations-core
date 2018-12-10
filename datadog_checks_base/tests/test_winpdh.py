@@ -87,9 +87,15 @@ def test_winpdhcounter_bad_strings_not_english(pdh_mocks_fixture_bad_perf_string
 def test_winpdhcounter_non_english(pdh_mocks_fixture):
     WinPDHCounter._use_en_counter_names = False
     WinPDHCounter.pdh_counter_dict = defaultdict(list)
-    initialize_pdh_tests(lang="se-sv")
+    initialize_pdh_tests(lang="se-sv", update=True)
     counter = WinPDHCounter('System', 'Processor Queue Length', logger)
 
     vals = counter.get_all_values()
     assert len(vals) == 1  # single instance key, should only have one value
     assert SINGLE_INSTANCE_KEY in vals
+    initialize_pdh_tests(lang="en-us", update=True)
+    counter = WinPDHCounter('System', 'Processor Queue Length', logger)
+
+    counter.collect_counters()
+    vals = counter.get_all_values()
+    assert len(vals) == 1  # single instance key, should only have one value
