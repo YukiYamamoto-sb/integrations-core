@@ -6,6 +6,7 @@ from .manifest import manifest
 from .metadata import metadata
 from .service_checks import service_checks
 from .agent_reqs import agent_reqs
+from .py3 import py3
 
 ALL_COMMANDS = (
     dep,
@@ -13,4 +14,5 @@ ALL_COMMANDS = (
     metadata,
     service_checks,
     agent_reqs,
+    py3,
 )
